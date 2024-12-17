@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Note</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Create New Note</h1>
+<div>
+    <label for="listName">List Name:</label>
+    <input type="text" id="listName" placeholder="Enter list name">
+</div>
+<p>Enter items, separated by new lines:</p>
+<textarea id="itemList" placeholder="Item 1\nItem 2\nItem 3"></textarea>
+<button onclick="saveList()">Save List</button>
+<button onclick="location.href='index.html'">Back to Home</button>
+
+<script>
+    function saveList() {
+        const listName = document.getElementById('listName').value.trim();
+        const input = document.getElementById('itemList').value;
+        const items = input.split('\n').filter(item => item.trim() !== '');
+
+        if (listName === '' || items.length === 0) {
+            alert("Please enter a list name and at least one item.");
+            return;
+        }
+
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        lists[listName] = items;
+        localStorage.setItem('lists', JSON.stringify(lists));
+
+        alert("List saved successfully!");
+        location.href = 'index.html';
+    }
+</script>
+
+</body>
+</html>
