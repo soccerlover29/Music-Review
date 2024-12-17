@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .list-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Multiple Random Item Selector</h1>
+
+<div>
+    <label for="listName">List Name:</label>
+    <input type="text" id="listName" placeholder="Enter list name">
+</div>
+<div class="list-container">
+    <h2>Your Lists</h2>
+    <select id="listSelector" onchange="loadList()">
+        <option value="">Select a list</option>
+    </select>
+</div>
+<div>
+    <p>Enter items, separated by new lines:</p>
+    <textarea id="itemList" placeholder="Item 1\nItem 2\nItem 3"></textarea>
+    <button onclick="saveList()">Save List</button>
+    <button onclick="selectRandomItem()">Select Random Item</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+    function saveList() {
+        const listName = document.getElementById('listName').value.trim();
+        const input = document.getElementById('itemList').value;
+        const items = input.split('\n').filter(item => item.trim() !== '');
+
+        if (listName === '' || items.length === 0) {
+            alert("Please enter a list name and at least one item.");
+            return;
+        }
+
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        lists[listName] = items;
+        localStorage.setItem('lists', JSON.stringify(lists));
+
+        updateListSelector();
+        clearInputs();
+    }
+
+    function updateListSelector() {
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        const listSelector = document.getElementById('listSelector');
+        listSelector.innerHTML = '<option value="">Select a list</option>';
+
+        for (const list in lists) {
+            const option = document.createElement('option');
+            option.value = list;
+            option.textContent = list;
+            listSelector.appendChild(option);
+        }
+    }
+
+    function loadList() {
+        const listName = document.getElementById('listSelector').value;
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        if (listName) {
+            document.getElementById('itemList').value = lists[listName].join('\n');
+        } else {
+            document.getElementById('itemList').value = '';
+        }
+    }
+
+    function selectRandomItem() {
+        const listName = document.getElementById('listSelector').value;
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        
+        if (!listName) {
+            document.getElementById('result').innerText = "Please select a list.";
+            return;
+        }
+
+        const items = lists[listName];
+        const randomIndex = Math.floor(Math.random() * items.length);
+        const selectedItem = items[randomIndex];
+
+        document.getElementById('result').innerText = "Selected Item: " + selectedItem;
+    }
+
+    function clearInputs() {
+        document.getElementById('itemList').value = '';
+        document.getElementById('listName').value = '';
+    }
+
+    // Load lists on page load
+    window.onload = updateListSelector;
+
+</script>
+
+</body>
+</html>
