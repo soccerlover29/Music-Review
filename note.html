@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Note</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Edit Note</h1>
+<div>
+    <label for="listName">List Name:</label>
+    <input type="text" id="listName" placeholder="Enter list name" disabled>
+</div>
+<p>Enter items, separated by new lines:</p>
+<textarea id="itemList" placeholder="Item 1\nItem 2\nItem 3"></textarea>
+<button onclick="updateList()">Update List</button>
+<button onclick="selectRandomItem()">Select Random Item</button>
+<button onclick="location.href='index.html'">Back to Home</button>
+
+<div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const listName = decodeURIComponent(urlParams.get('list'));
+
+    function loadList() {
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        if (listName in lists) {
+            document.getElementById('listName').value = listName;
+            document.getElementById('itemList').value = lists[listName].join('\n');
+        }
+    }
+
+    function updateList() {
+        const input = document.getElementById('itemList').value;
+        const items = input.split('\n').filter(item => item.trim() !== '');
+
+        if (items.length === 0) {
+            alert("Please enter at least one item.");
+            return;
+        }
+
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        lists[listName] = items;
+        localStorage.setItem('lists', JSON.stringify(lists));
+
+        alert("List updated successfully!");
+    }
+
+    function selectRandomItem() {
+        const lists = JSON.parse(localStorage.getItem('lists')) || {};
+        const items = lists[listName];
+
+        if (!items || items.length === 0) {
+            alert("No items in this list.");
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * items.length);
+        const selectedItem = items[randomIndex];
+        document.getElementById('result').innerText = "Selected Item: " + selectedItem;
+    }
+
+    window.onload = loadList;
+</script>
+
+</body>
+</html>
