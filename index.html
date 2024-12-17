@@ -6,27 +6,60 @@
     <title>Home - Random Item Selector</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4A90E2;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
         button {
             margin-top: 10px;
             padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4A90E2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #357ABD;
         }
         ul {
             list-style-type: none;
             padding: 0;
+            margin: 0;
         }
         li {
-            margin: 5px 0;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        strong {
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
 
-<h1>Your Lists</h1>
-<ul id="listContainer"></ul>
-<button onclick="location.href='create_note.html'">Create New Note</button>
+<div class="container">
+    <h1>Your Lists</h1>
+    <ul id="listContainer"></ul>
+    <button onclick="location.href='create_note.html'">Create New Note</button>
+</div>
 
 <script>
     function updateListDisplay() {
@@ -38,8 +71,10 @@
             const listItem = document.createElement('li');
             listItem.innerHTML = `
                 <strong>${list}</strong>
-                <button onclick="location.href='note.html?list=${encodeURIComponent(list)}'">Edit</button>
-                <button onclick="generateRandomItem('${list}')">Select Random Item</button>
+                <div>
+                    <button onclick="location.href='note.html?list=${encodeURIComponent(list)}'">Edit</button>
+                    <button onclick="generateRandomItem('${list}')">Select Random Item</button>
+                </div>
             `;
             listContainer.appendChild(listItem);
         }
